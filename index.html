@@ -1,0 +1,1865 @@
+<html lang="en" data-theme="dark"><head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="C:\Users\hp\Desktop\project\imageabcd.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost-Inbox - Professional Temporary Email Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/npm/inter-ui@3.19.3/inter.min.css');
+        /* Theme variables */
+        [data-theme="dark"] {
+            --bg-color: #0f1217;
+            --text-color: #e6e6e6;
+            --box-bg: #1a1e24;
+            --border-color: #2a2f38;
+            --hover-border-color: #3a4d63;
+            --box-shadow: rgba(0, 0, 0, 0.1);
+            --header-gradient: linear-gradient(to bottom, #0f1217, #1a1e24);
+            --ad-bg: linear-gradient(135deg, #1a1e24, #2a2f38);
+            --inbox-head-bg: #1f2430;
+            --inbox-bg: #2a2f38;
+            --timer-bg: #1a1e24;
+            --accent-color: #00ffa9;
+            --accent-glow: rgba(0, 255, 169, 0.4);
+            --verification-bg: rgba(0, 255, 169, 0.18);
+            --verification-border: rgba(0, 255, 169, 0.6);
+            --verification-pulse: rgba(0, 255, 169, 0.85);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f5f7fa;
+            --text-color: #333333;
+            --box-bg: #ffffff;
+            --border-color: #d1d5db;
+            --hover-border-color: #9ca3af;
+            --box-shadow: rgba(0, 0, 0, 0.05);
+            --header-gradient: linear-gradient(to bottom, #f5f7fa, #ffffff);
+            --ad-bg: linear-gradient(135deg, #ffffff, #f5f7fa);
+            --inbox-head-bg: #e5e7eb;
+            --inbox-bg: #f3f4f6;
+            --timer-bg: #ffffff;
+            --accent-color: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.4);
+            --verification-bg: rgba(16, 185, 129, 0.15);
+            --verification-border: rgba(16, 185, 129, 0.5);
+            --verification-pulse: rgba(16, 185, 129, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-x: hidden;
+        }
+
+        .ghost-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .email-box {
+            background-color: var(--box-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 15px -3px var(--box-shadow), 0 4px 6px -2px var(--box-shadow);
+        }
+
+        .email-box:hover {
+            box-shadow: 0 15px 25px -5px var(--box-shadow), 0 10px 10px -5px var(--box-shadow);
+            border-color: var(--hover-border-color);
+            transform: translateY(-2px);
+        }
+
+        .button-ghost {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 2px solid;
+            transform: translateY(0);
+        }
+
+        .button-ghost:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 255, 170, 0.15);
+        }
+
+        .button-ghost:active {
+            transform: translateY(-1px);
+            transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .button-ghost::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 170, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .button-ghost:hover::before {
+            left: 100%;
+        }
+
+        .button-delete {
+            border-color: #ff5252;
+            background-color: rgba(255, 82, 82, 0.1);
+        }
+
+        .button-delete:hover {
+            background-color: rgba(255, 82, 82, 0.15);
+            box-shadow: 0 10px 20px rgba(255, 82, 82, 0.15);
+        }
+
+        .button-refresh {
+            border-color: #00bcd4;
+            background-color: rgba(0, 188, 212, 0.1);
+        }
+
+        .button-refresh:hover {
+            background-color: rgba(0, 188, 212, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 188, 212, 0.15);
+        }
+
+        .button-copy {
+            border-color: var(--accent-color);
+            background-color: rgba(0, 255, 169, 0.1);
+        }
+
+        .button-copy:hover {
+            background-color: rgba(0, 255, 169, 0.15);
+            box-shadow: 0 10px 20px var(--accent-glow);
+        }
+
+        .inbox-message {
+            border-left: 4px solid;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(0);
+            background-color: var(--box-bg);
+            margin-bottom: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .inbox-message:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--box-shadow);
+            border-left-width: 6px;
+        }
+
+        .inbox-message-verification {
+            border-left-color: var(--accent-color);
+            background-color: var(--verification-bg) !important;
+            border: 2px solid var(--verification-border);
+            box-shadow: 0 0 18px var(--verification-pulse);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inbox-message-verification:hover {
+            box-shadow: 0 8px 25px var(--verification-pulse);
+            border-width: 3px;
+        }
+
+        .inbox-message-verification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        .inbox-message-link {
+            border-left-color: #00bcd4;
+        }
+
+        .timer-container {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .timer-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-color) var(--progress), var(--border-color) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .timer-inner {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background-color: var(--timer-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .glow-effect {
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color);
+                box-shadow: 0 0 15px var(--accent-glow);
+            }
+            100% {
+                text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color);
+                box-shadow: 0 0 25px var(--accent-glow);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spin-animation {
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .slide-in {
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .email-badge {
+            background-color: rgba(0, 255, 169, 0.15);
+            border: 1px solid rgba(0, 255, 169, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            color: var(--accent-color);
+            font-size: 0.85em;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 140px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .ad-banner {
+            background: var(--ad-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px var(--box-shadow);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-banner::before {
+            content: 'ADVERTISEMENT';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 10px;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        .ad-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px var(--box-shadow);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(0, 255, 169, 0.1);
+            color: var(--accent-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge:hover {
+            background-color: rgba(0, 255, 169, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .status-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            margin-right: 0.5rem;
+            animation: pulse 1.5s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
+        }
+
+        .verification-code {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(0, 255, 169, 0.2);
+            color: var(--accent-color);
+            padding: 0.35rem 0.7rem;
+            border-radius: 0.3rem;
+            letter-spacing: 1.5px;
+            font-weight: 900;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px var(--accent-glow);
+            box-shadow: 0 0 15px var(--verification-pulse);
+            border: 1px solid var(--verification-border);
+        }
+
+        .verification-code:hover {
+            background-color: rgba(0, 255, 169, 0.25);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 0 20px var(--verification-pulse);
+        }
+
+        .verification-link {
+            color: #00bcd4;
+            text-decoration: underline;
+            word-break: break-all;
+            transition: all 0.3s ease;
+        }
+
+        .verification-link:hover {
+            color: #00e5ff;
+            text-decoration: none;
+        }
+
+        .server-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(0, 255, 169, 0.1);
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .server-status:hover {
+            background-color: rgba(0, 255, 169, 0.2);
+            transform: scale(1.05);
+        }
+
+        .email-address {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .message-time {
+            opacity: 0.7;
+            font-size: 0.85em;
+        }
+
+        .copy-alert {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: var(--accent-color);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 100;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: none;
+            font-weight: 500;
+        }
+
+        .copy-alert.show {
+            display: block;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .message-subject {
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.03em;
+            font-size: 1.05em;
+        }
+
+        .inbox-empty-state {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .inbox-empty-state:hover {
+            border-color: var(--hover-border-color);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background-color: rgba(0, 255, 169, 0.1);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 255, 169, 0.2);
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 255, 169, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--accent-color);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .message-modal {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .message-modal > div {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        .message-modal.show > div {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .feature-card {
+            background-color: var(--box-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px var(--box-shadow), 0 10px 10px -5px var(--box-shadow);
+        }
+
+        .feature-icon {
+            background-color: rgba(0, 255, 169, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feature-card:hover .feature-icon {
+            background-color: rgba(0, 255, 169, 0.2);
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .about-section {
+            margin-top: 6rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section-title:hover::after {
+            width: 100%;
+        }
+
+        .use-case-card {
+            background-color: var(--box-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            height: 100%;
+        }
+
+        .use-case-card:hover {
+            border-color: var(--hover-border-color);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px var(--box-shadow), 0 10px 10px -5px var(--box-shadow);
+        }
+
+        .use-case-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .use-case-card:hover .use-case-icon {
+            transform: scale(1.2);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--accent-color);
+        }
+
+        .faq-answer {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--accent-color);
+            display: none;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-icon {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .footer {
+            margin-top: 6rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .feature-card:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .use-case-card:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .use-case-card:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .use-case-card:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .use-case-card:nth-child(4) {
+            transition-delay: 0.4s;
+        }
+
+        .verification-badge {
+            background-color: var(--verification-bg);
+            border: 1px solid var(--verification-border);
+            color: var(--accent-color);
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            animation: pulse 2s infinite;
+            text-shadow: 0 0 5px var(--accent-glow);
+            box-shadow: 0 0 10px var(--verification-pulse);
+        }
+
+        .verification-highlight {
+            background-color: var(--verification-bg);
+            border: 3px solid var(--verification-border);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 16px 0;
+            position: relative;
+            font-weight: 800;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px var(--verification-pulse);
+        }
+
+        .verification-highlight .text-center.font-mono.text-xl {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-shadow: 0 0 10px var(--accent-glow);
+            padding: 8px;
+            background-color: rgba(0, 255, 169, 0.15);
+            border-radius: 6px;
+            margin-top: 8px;
+            color: white;
+            border: 2px solid var(--verification-border);
+            display: inline-block;
+        }
+
+        .side-ad-container {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 160px;
+            height: 600px;
+            background: var(--ad-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .side-ad-container {
+                display: none;
+            }
+        }
+
+        #inbox-messages {
+            padding: 18px !important;
+        }
+
+        .view-message, .delete-message {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-message:hover, .delete-message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-content {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #eaeaea !important;
+            color: black !important;
+        }
+
+        .verification-modal-content {
+            border: 4px solid var(--verification-border) !important;
+            padding: 24px !important;
+        }
+        
+        .api-loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .api-error {
+            padding: 1rem;
+            border: 2px solid #ff5252;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 82, 82, 0.1);
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        /* Message modal content styling for better readability */
+        .message-content {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .message-content h1, 
+        .message-content h2, 
+        .message-content h3, 
+        .message-content h4, 
+        .message-content h5, 
+        .message-content h6 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .message-content a {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+
+        .message-content p, .message-content div {
+            margin-bottom: 15px;
+        }
+
+        .message-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+
+        .message-content ul, .message-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .message-content li {
+            margin-bottom: 5px;
+        }
+
+        .message-content blockquote {
+            border-left: 3px solid #ccc;
+            padding-left: 10px;
+            margin-left: 0;
+            color: #666;
+        }
+
+        .message-content pre, .message-content code {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .message-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .message-header strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Verification code specific styling */
+        .verification-code-container {
+            background-color: #f8fafc;
+            border: 2px dashed #4ade80;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .verification-code-value {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+            background-color: #e8f5e9;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="side-ad-container">
+        <div style="position: absolute; top: 10px; left: 10px; font-size: 10px; opacity: 0.7;">ADVERTISEMENT</div>
+        <div style="text-align: center; padding: 10px;">
+            <p class="text-sm">160x600 Ad Space</p>
+            <p class="text-xs mt-2">Your ad could be here</p>
+        </div>
+    </div>
+
+    <div class="ghost-container py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row items-center justify-between mb-8 slide-in">
+            <div class="flex items-center mb-4 md:mb-0">
+                <div class="text-5xl mr-4 text-green-400 animate-pulse">
+                    <i class="fas fa-ghost"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-bold">Ghost-<span class="text-green-400">Inbox</span></h1>
+                    <p class="text-gray-400">Secure temporary emails valid for 15 minutes</p>
+                </div>
+            </div>
+            <div class="flex items-center">
+                <div class="server-status mr-4">
+                    <span class="status-badge-dot"></span>
+                    <span id="api-status">Checking API...</span>
+                </div>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="timer-container ml-4">
+                    <div class="timer-circle" id="timer-circle" style="--progress: 100%;">
+                        <div class="timer-inner">
+                            <span id="timer">15:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Top Ad Banner -->
+        <div class="ad-banner mb-8 slide-in">
+            <div style="text-align: center;">
+                <p class="text-sm">728x90 Ad Space</p>
+                <p class="text-xs mt-2">Your ad could be here</p>
+            </div>
+        </div>
+
+        <!-- Email Box -->
+        <div class="email-box mb-8 slide-in" style="transition-delay: 0.1s;">
+            <h2 class="text-xl mb-4 text-center font-semibold flex items-center justify-center">
+                <i class="fas fa-envelope mr-2 text-green-400"></i>
+                Your Temporary Email Address
+            </h2>
+            <div class="bg-gray-800 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between">
+                <div class="email-address text-green-400 text-lg font-mono mb-4 sm:mb-0 select-all" id="email-address">
+                    <span class="spinner"></span>Generating your email...
+                </div>
+                <button class="button-ghost button-copy bg-gray-900 text-green-400 px-6 py-3 rounded-md flex items-center" id="copy-button" disabled="">
+                    <i class="far fa-copy mr-2"></i> Copy
+                </button>
+            </div>
+            <div class="mt-4 text-sm text-gray-400 flex items-center justify-center">
+                <i class="fas fa-clock mr-2"></i>
+                <span>This email address will expire in <span id="timer-text" class="text-green-400 font-semibold">15 minutes</span></span>
+            </div>
+        </div>
+
+        <!-- Button Controls -->
+        <div class="flex flex-col sm:flex-row justify-between gap-4 mb-8 slide-in" style="transition-delay: 0.2s;">
+            <button class="button-ghost button-delete bg-gray-900 text-red-400 px-6 py-3 rounded-md flex-1 flex items-center justify-center mb-3 sm:mb-0" id="delete-button" disabled="">
+                <i class="fas fa-trash-alt mr-2"></i> Delete &amp; Generate New
+            </button>
+            <button class="button-ghost button-refresh bg-gray-900 text-blue-400 px-6 py-3 rounded-md flex-1 flex items-center justify-center" id="refresh-button" disabled="">
+                <i class="fas fa-sync-alt mr-2"></i> Refresh Inbox
+            </button>
+        </div>
+
+        <!-- Inbox Section -->
+        <div class="mb-8 slide-in" style="transition-delay: 0.3s;">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-inbox text-green-400 mr-2"></i>
+                    Inbox
+                </h2>
+                <span class="status-badge" id="message-count">
+                    <span class="status-badge-dot"></span>
+                    <span>0 messages</span>
+                </span>
+            </div>
+            <div class="bg-gray-800 rounded-lg overflow-hidden">
+                <div class="p-4 bg-gray-700 border-b border-gray-600 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-filter text-blue-400 mr-2"></i>
+                        <span class="text-sm font-medium">Showing all received emails</span>
+                    </div>
+                    <button class="bg-gray-600 hover:bg-gray-500 text-white text-sm rounded px-3 py-1 flex items-center transition-all duration-300" id="clear-inbox-button" disabled="">
+                        <i class="fas fa-eraser mr-1"></i> Clear All
+                    </button>
+                </div>
+                <div id="inbox-messages" class="p-4 max-h-96 overflow-y-auto">
+                    <div class="inbox-empty-state text-center text-gray-400 py-8" id="empty-inbox">
+                        <i class="fas fa-inbox text-6xl mb-3 opacity-50"></i>
+                        <h3 class="text-xl font-semibold mb-2">Your inbox is empty</h3>
+                        <p>Messages will appear here when you receive emails at your temporary address.</p>
+                    </div>
+                    <div id="messages-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Modal -->
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 message-modal" style="display: none;" id="message-modal">
+            <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center p-4 border-b border-gray-300 modal-header">
+                    <h3 class="text-xl font-semibold text-gray-900" id="modal-subject">Message Subject</h3>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-4 modal-content" id="modal-content">
+                    <div class="message-header">
+                        <p class="mb-2"><strong>From:</strong> <span id="modal-from">sender@example.com</span></p>
+                        <p class="mb-2"><strong>Date:</strong> <span id="modal-date">January 1, 2023</span></p>
+                    </div>
+                    <div class="message-content" id="modal-body">
+                        <div class="api-loading">
+                            <span class="spinner" style="border-top-color: #00bcd4;"></span>
+                            Loading message content...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification for Copy Success -->
+        <div class="copy-alert" id="copy-alert">
+            Email address copied to clipboard!
+        </div>
+
+        <!-- Middle Ad Banner -->
+        <div class="ad-banner mb-8">
+            <div style="text-align: center;">
+                <p class="text-sm">468x60 Ad Space</p>
+                <p class="text-xs mt-2">Your ad could be here</p>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-12 slide-up active">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-star text-yellow-400 mr-2"></i>
+                Why Use Ghost-Inbox?
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="feature-card slide-up active">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Privacy Protection</h3>
+                    <p class="text-gray-400">Keep your personal email address safe from spam, data breaches, and unwanted marketing emails.</p>
+                </div>
+                <div class="feature-card slide-up active">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Instant Setup</h3>
+                    <p class="text-gray-400">No registration required. Get a temporary email address in seconds, ready to use immediately.</p>
+                </div>
+                <div class="feature-card slide-up active">
+                    <div class="feature-icon">
+                        <i class="fas fa-trash-alt text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Self-Destructing</h3>
+                    <p class="text-gray-400">Emails are automatically deleted after 15 minutes, leaving no trace or data behind.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Ghost-Inbox Section -->
+        <div class="about-section slide-up active">
+            <h2 class="text-2xl font-bold section-title">
+                About Ghost-Inbox
+            </h2>
+            <div class="mt-6">
+                <p class="mb-4">Ghost-Inbox provides secure, anonymous, temporary email addresses that automatically self-destruct after 15 minutes. Our service is designed for privacy-conscious individuals who need to protect their primary email from spam, data mining, and potential security threats.</p>
+                <p class="mb-4">Unlike traditional email services that store your data indefinitely, Ghost-Inbox leaves no trace after the expiration period. All messages, account information, and metadata are completely wiped from our servers, ensuring your digital footprint remains minimal.</p>
+                <p>Our API-driven infrastructure ensures high reliability and security, with no personal information required to use the service. Simply generate an address, use it for your immediate needs, and let it vanish - leaving spammers and data collectors with nothing but a ghost.</p>
+            </div>
+        </div>
+
+        <!-- Bottom Ad Banner -->
+        <div class="ad-banner my-8">
+            <div style="text-align: center;">
+                <p class="text-sm">300x250 Ad Space</p>
+                <p class="text-xs mt-2">Your ad could be here</p>
+            </div>
+        </div>
+
+        <!-- Use Cases Section -->
+        <div class="mt-12 slide-up active">
+            <h2 class="text-2xl font-bold section-title">
+                Common Use Cases
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="use-case-card slide-up active">
+                    <div class="use-case-icon">
+                        <i class="fas fa-file-download"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Downloading Files or Content</h3>
+                    <p class="text-gray-400">Use Ghost-Inbox when you need to download files that require email verification but you don't want to expose your personal email to potential marketing lists.</p>
+                </div>
+                <div class="use-case-card slide-up active">
+                    <div class="use-case-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Testing Applications</h3>
+                    <p class="text-gray-400">Developers and testers can use Ghost-Inbox to verify registration flows, email sending functionality, and notification systems without creating multiple permanent accounts.</p>
+                </div>
+                <div class="use-case-card slide-up active">
+                    <div class="use-case-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">One-Time Purchases</h3>
+                    <p class="text-gray-400">When making a one-time purchase from an online retailer, use Ghost-Inbox to receive order confirmations without subscribing to marketing emails.</p>
+                </div>
+                <div class="use-case-card slide-up active">
+                    <div class="use-case-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Online Forums &amp; Communities</h3>
+                    <p class="text-gray-400">Sign up for forums or community platforms that you want to explore without committing your personal email address to yet another service.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Ghost-Inbox Application
+         * Using Mail.tm API for real temporary email functionality
+         */
+        class GhostInbox {
+            constructor() {
+                this.emailAddress = "";
+                this.messages = [];
+                this.countdown = 15 * 60; // 15 minutes in seconds
+                this.theme = localStorage.getItem('ghost-inbox-theme') || 'dark';
+                this.mailTmApiUrl = "https://api.mail.tm";
+                this.token = null;
+                this.accountId = null;
+                this.password = null;
+                this.domains = [];
+                this.lastCheckTime = 0;
+                this.messageCheckInterval = null;
+                
+                this.init();
+            }
+            
+            async init() {
+                // Set initial theme
+                document.documentElement.setAttribute('data-theme', this.theme);
+                document.getElementById('theme-toggle').innerHTML = this.theme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                // Bind event listeners
+                this.bindEvents();
+                
+                // Check API status first
+                await this.checkApiStatus();
+                
+                // Get available domains
+                await this.getAvailableDomains();
+                
+                // Generate email address
+                await this.generateEmailAddress();
+                
+                // Start countdown
+                this.startCountdown();
+            }
+            
+            bindEvents() {
+                // Theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+                
+                // Copy button
+                document.getElementById('copy-button').addEventListener('click', () => this.copyEmailAddress());
+                
+                // Delete and generate new button
+                document.getElementById('delete-button').addEventListener('click', () => this.regenerateEmailAddress());
+                
+                // Refresh inbox button
+                document.getElementById('refresh-button').addEventListener('click', () => {
+                    const button = document.getElementById('refresh-button');
+                    button.innerHTML = '<i class="fas fa-sync-alt fa-spin mr-2"></i> Refreshing...';
+                    button.disabled = true;
+                    
+                    this.fetchMessages().finally(() => {
+                        button.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Refresh Inbox';
+                        button.disabled = false;
+                    });
+                });
+                
+                // Clear inbox button
+                document.getElementById('clear-inbox-button').addEventListener('click', () => this.clearInbox());
+                
+                // Modal close button
+                document.getElementById('close-modal').addEventListener('click', () => this.hideMessageModal());
+                
+                // Close modal when clicking outside
+                document.getElementById('message-modal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('message-modal')) {
+                        this.hideMessageModal();
+                    }
+                });
+                
+                // Escape key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && document.getElementById('message-modal').style.display === 'flex') {
+                        this.hideMessageModal();
+                    }
+                });
+            }
+            
+            async checkApiStatus() {
+                const statusEl = document.getElementById('api-status');
+                statusEl.innerHTML = `<span class="spinner" style="width: 12px; height: 12px; margin-right: 5px;"></span>Checking API...`;
+                
+                try {
+                    const response = await fetch(`${this.mailTmApiUrl}`);
+                    if (response.ok) {
+                        statusEl.innerHTML = `<span class="status-badge-dot"></span>System Online`;
+                    } else {
+                        statusEl.innerHTML = `<span class="status-badge-dot" style="background-color: #ff5252;"></span>API Limited`;
+                    }
+                } catch (error) {
+                    console.error('Error checking Mail.tm API status:', error);
+                    statusEl.innerHTML = `<span class="status-badge-dot" style="background-color: #ff5252;"></span>API Unavailable`;
+                }
+            }
+            
+            async getAvailableDomains() {
+                try {
+                    const response = await fetch(`${this.mailTmApiUrl}/domains`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch domains');
+                    }
+                    
+                    const data = await response.json();
+                    if (data && data['hydra:member'] && data['hydra:member'].length > 0) {
+                        this.domains = data['hydra:member'];
+                    } else {
+                        // Fallback domains if API doesn't return any
+                        this.domains = [{ domain: 'mail.tm' }];
+                    }
+                } catch (error) {
+                    console.error('Error fetching domains:', error);
+                    // Fallback domains if API call fails
+                    this.domains = [{ domain: 'mail.tm' }];
+                }
+            }
+            
+            generateRandomString(length) {
+                const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                
+                return result;
+            }
+            
+            async generateEmailAddress() {
+                const emailAddressEl = document.getElementById('email-address');
+                emailAddressEl.innerHTML = '<span class="spinner"></span>Generating...';
+                
+                // Clear any existing interval
+                if (this.messageCheckInterval) {
+                    clearInterval(this.messageCheckInterval);
+                }
+                
+                // Reset state
+                this.token = null;
+                this.accountId = null;
+                this.messages = [];
+                
+                try {
+                    // Generate random username and password
+                    const username = this.generateRandomString(8);
+                    this.password = this.generateRandomString(12);
+                    
+                    // Select a random domain from available domains
+                    const domain = this.domains.length > 0 
+                        ? this.domains[Math.floor(Math.random() * this.domains.length)].domain 
+                        : 'mail.tm';
+                    
+                    this.emailAddress = `${username}@${domain}`;
+                    
+                    // Register the email account
+                    const accountResponse = await fetch(`${this.mailTmApiUrl}/accounts`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            address: this.emailAddress,
+                            password: this.password
+                        })
+                    });
+                    
+                    if (!accountResponse.ok) {
+                        throw new Error('Failed to create email account');
+                    }
+                    
+                    const accountData = await accountResponse.json();
+                    this.accountId = accountData.id;
+                    
+                    // Get auth token
+                    const tokenResponse = await fetch(`${this.mailTmApiUrl}/token`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            address: this.emailAddress,
+                            password: this.password
+                        })
+                    });
+                    
+                    if (!tokenResponse.ok) {
+                        throw new Error('Failed to get authentication token');
+                    }
+                    
+                    const tokenData = await tokenResponse.json();
+                    this.token = tokenData.token;
+                    
+                    // Update UI with the new email address
+                    emailAddressEl.textContent = this.emailAddress;
+                    emailAddressEl.classList.add('glow-effect');
+                    
+                    setTimeout(() => {
+                        emailAddressEl.classList.remove('glow-effect');
+                    }, 2000);
+                    
+                    // Enable buttons
+                    document.getElementById('copy-button').disabled = false;
+                    document.getElementById('delete-button').disabled = false;
+                    document.getElementById('refresh-button').disabled = false;
+                    document.getElementById('clear-inbox-button').disabled = false;
+                    
+                    // Set interval to fetch messages every 10 seconds
+                    this.messageCheckInterval = setInterval(() => this.fetchMessages(), 10000);
+                    
+                    // Fetch initial messages (will be empty for new account)
+                    await this.fetchMessages();
+                    
+                } catch (error) {
+                    console.error('Error generating email address:', error);
+                    emailAddressEl.innerHTML = 'Error creating email. <button class="text-blue-400 underline" onclick="window.ghostInbox.generateEmailAddress()">Try again</button>';
+                }
+            }
+            
+            async regenerateEmailAddress() {
+                const deleteButton = document.getElementById('delete-button');
+                deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating New';
+                deleteButton.disabled = true;
+                
+                // Clear existing interval
+                if (this.messageCheckInterval) {
+                    clearInterval(this.messageCheckInterval);
+                }
+                
+                // Reset countdown
+                this.countdown = 15 * 60;
+                
+                // Generate new email
+                await this.generateEmailAddress();
+                
+                // Restore button
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt mr-2"></i> Delete & Generate New';
+                deleteButton.disabled = false;
+            }
+            
+            copyEmailAddress() {
+                if (!this.emailAddress) return;
+                
+                navigator.clipboard.writeText(this.emailAddress).then(() => {
+                    const copyButton = document.getElementById('copy-button');
+                    const originalText = copyButton.innerHTML;
+                    
+                    copyButton.innerHTML = '<i class="fas fa-check mr-2"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                    }, 2000);
+                    
+                    const alert = document.getElementById('copy-alert');
+                    alert.classList.add('show');
+                    
+                    setTimeout(() => {
+                        alert.classList.remove('show');
+                    }, 3000);
+                });
+            }
+            
+            startCountdown() {
+                const timerEl = document.getElementById('timer');
+                const timerTextEl = document.getElementById('timer-text');
+                const timerCircle = document.getElementById('timer-circle');
+                
+                const updateTimer = () => {
+                    if (this.countdown <= 0) {
+                        // Time's up - regenerate email
+                        this.regenerateEmailAddress();
+                        return;
+                    }
+                    
+                    const minutes = Math.floor(this.countdown / 60);
+                    const seconds = this.countdown % 60;
+                    const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    const progress = (this.countdown / (15 * 60)) * 100;
+                    
+                    timerEl.textContent = formattedTime;
+                    timerTextEl.textContent = this.countdown >= 60 
+                        ? `${minutes} minute${minutes !== 1 ? 's' : ''}` 
+                        : `${seconds} second${seconds !== 1 ? 's' : ''}`;
+                    
+                    timerCircle.style.setProperty('--progress', `${progress}%`);
+                    
+                    if (this.countdown <= 30) {
+                        timerEl.classList.add('text-red-500');
+                        timerTextEl.classList.add('text-red-500');
+                        timerTextEl.classList.remove('text-green-400');
+                    } else {
+                        timerEl.classList.remove('text-red-500');
+                        timerTextEl.classList.remove('text-red-500');
+                        timerTextEl.classList.add('text-green-400');
+                    }
+                    
+                    this.countdown--;
+                };
+                
+                updateTimer();
+                setInterval(updateTimer, 1000);
+            }
+            
+            async fetchMessages() {
+                if (!this.token || !this.emailAddress) {
+                    return;
+                }
+                
+                const messagesContainer = document.getElementById('messages-container');
+                const emptyInbox = document.getElementById('empty-inbox');
+                
+                try {
+                    // Only fetch messages if we have a valid token
+                    const response = await fetch(`${this.mailTmApiUrl}/messages`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch messages');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data && data['hydra:member']) {
+                        this.messages = data['hydra:member'];
+                        this.renderMessages();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                    messagesContainer.innerHTML = `
+                        <div class="api-error">
+                            <i class="fas fa-exclamation-circle text-red-400 text-xl mb-2"></i>
+                            <p>Error fetching messages. Please try refreshing.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            async getMessageContent(messageId) {
+                if (!this.token || !messageId) {
+                    return null;
+                }
+                
+                try {
+                    // Fetch the complete message
+                    const response = await fetch(`${this.mailTmApiUrl}/messages/${messageId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch message content');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Mark message as seen
+                    await fetch(`${this.mailTmApiUrl}/messages/${messageId}/seen`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    return data;
+                    
+                } catch (error) {
+                    console.error('Error fetching message content:', error);
+                    return null;
+                }
+            }
+            
+            isVerificationMessage(message) {
+                if (!message) return false;
+                
+                const verificationKeywords = ['verify', 'verification', 'confirm', 'code', 'activate', 'validate', 'otp', 'one-time', 'passcode'];
+                const subject = message.subject ? message.subject.toLowerCase() : '';
+                const intro = message.intro ? message.intro.toLowerCase() : '';
+                
+                return verificationKeywords.some(keyword =>
+                    subject.includes(keyword) || intro.includes(keyword)
+                );
+            }
+            
+            extractVerificationCode(text) {
+                if (!text) return null;
+                
+                // Common verification code patterns
+                const patterns = [
+                    /verify.*?(\d{4,8})/i,
+                    /verification code.*?(\d{4,8})/i,
+                    /code.*?(\d{4,8})/i,
+                    /verification code[:\s]+([A-Z0-9]{4,8})/i,
+                    /one-time code[:\s]+([A-Z0-9]{4,8})/i,
+                    /OTP[:\s]+([A-Z0-9]{4,8})/i,
+                    /passcode[:\s]+([A-Z0-9]{4,8})/i
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = text.match(pattern);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                }
+                
+                return null;
+            }
+            
+            renderMessages() {
+                const messagesContainer = document.getElementById('messages-container');
+                const emptyInbox = document.getElementById('empty-inbox');
+                const messageCount = document.getElementById('message-count');
+                
+                // Update message count
+                messageCount.innerHTML = `
+                    <span class="status-badge-dot"></span>
+                    <span>${this.messages.length} message${this.messages.length !== 1 ? 's' : ''}</span>
+                `;
+                
+                if (this.messages.length === 0) {
+                    messagesContainer.innerHTML = '';
+                    emptyInbox.style.display = 'flex';
+                    document.getElementById('clear-inbox-button').disabled = true;
+                    return;
+                }
+                
+                emptyInbox.style.display = 'none';
+                messagesContainer.innerHTML = '';
+                document.getElementById('clear-inbox-button').disabled = false;
+                
+                // Sort messages - newest first
+                const sortedMessages = [...this.messages].sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                
+                sortedMessages.forEach((message) => {
+                    // Format date and time
+                    const date = new Date(message.createdAt);
+                    const now = new Date();
+                    const isToday = date.toDateString() === now.toDateString();
+                    const dateString = isToday ? 'Today' : date.toLocaleDateString();
+                    const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    // Limit subject length
+                    const subject = message.subject && message.subject.length > 40 
+                        ? message.subject.substring(0, 40) + '...' 
+                        : (message.subject || 'No Subject');
+                    
+                    // Check if this is a verification message using metadata or content analysis
+                    const isVerification = this.isVerificationMessage(message);
+                    
+                    // Create message intro text
+                    const intro = message.intro || 'No preview available';
+                    
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `inbox-message p-4 mb-3 rounded-lg fade-in ${isVerification ? 'inbox-message-verification' : 'inbox-message-link'}`;
+                    messageEl.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center">
+                                <div class="message-subject">${subject}</div>
+                                ${isVerification ? '<span class="verification-badge ml-2"><i class="fas fa-key text-xs"></i> Verification</span>' : ''}
+                            </div>
+                            <div class="message-time">${dateString} ${timeString}</div>
+                        </div>
+                        <div class="text-sm mb-2">From: <span class="font-semibold">${message.from.address}</span></div>
+                        <div class="text-sm mb-3">${intro.substring(0, 100)}${intro.length > 100 ? '...' : ''}</div>
+                        <div class="flex justify-between">
+                            <button class="view-message bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-1 text-sm flex items-center">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </button>
+                            <button class="delete-message bg-red-500 hover:bg-red-600 text-white rounded px-4 py-1 text-sm flex items-center">
+                                <i class="fas fa-trash-alt mr-1"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add event listeners
+                    messageEl.querySelector('.view-message').addEventListener('click', () => {
+                        this.showMessageModal(message, isVerification);
+                    });
+                    
+                    messageEl.querySelector('.delete-message').addEventListener('click', () => {
+                        this.deleteMessage(message.id);
+                    });
+                    
+                    messagesContainer.appendChild(messageEl);
+                });
+            }
+            
+            async showMessageModal(messageBasic, isVerification = false) {
+                const modal = document.getElementById('message-modal');
+                const modalSubject = document.getElementById('modal-subject');
+                const modalFrom = document.getElementById('modal-from');
+                const modalDate = document.getElementById('modal-date');
+                const modalBody = document.getElementById('modal-body');
+                
+                // Set initial loading state
+                modalSubject.textContent = messageBasic.subject || 'No Subject';
+                modalFrom.textContent = messageBasic.from ? messageBasic.from.address : 'Unknown Sender';
+                modalDate.textContent = new Date(messageBasic.createdAt).toLocaleString();
+                modalBody.innerHTML = '<div class="api-loading"><span class="spinner" style="border-top-color: #333;"></span>Loading message content...</div>';
+                
+                // Show modal with loading state
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+                
+                try {
+                    // Get full message content from API
+                    const fullMessage = await this.getMessageContent(messageBasic.id);
+                    
+                    if (fullMessage) {
+                        // Process verification codes or links
+                        let htmlContent = fullMessage.html || fullMessage.text || 'No content available';
+                        const verificationCode = isVerification ? this.extractVerificationCode(fullMessage.text) : null;
+                        
+                        // If a verification code was found, highlight it
+                        if (verificationCode) {
+                            htmlContent = `
+                                <div class="message-content">
+                                    ${htmlContent}
+                                    
+                                    <div class="verification-code-container">
+                                        <p><strong>Verification Code Found:</strong></p>
+                                        <div class="verification-code-value">${verificationCode}</div>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            htmlContent = `<div class="message-content">${htmlContent}</div>`;
+                        }
+                        
+                        // Set the actual message content
+                        modalBody.innerHTML = htmlContent;
+                        
+                        // Convert any plain text URLs to clickable links
+                        this.makeLinksClickable(modalBody);
+                        
+                    } else {
+                        modalBody.innerHTML = '<div class="text-center text-gray-500">No message content available</div>';
+                    }
+                } catch (error) {
+                    console.error('Error displaying message:', error);
+                    modalBody.innerHTML = '<div class="api-error">Error loading message content. Please try again.</div>';
+                }
+            }
+            
+            makeLinksClickable(container) {
+                // Find all text nodes in the container
+                const textNodes = [];
+                const walk = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+                
+                let node;
+                while (node = walk.nextNode()) {
+                    textNodes.push(node);
+                }
+                
+                // URL regex pattern
+                const urlPattern = /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/gi;
+                
+                // Process each text node
+                textNodes.forEach(textNode => {
+                    const text = textNode.nodeValue;
+                    if (urlPattern.test(text)) {
+                        const fragment = document.createDocumentFragment();
+                        let lastIndex = 0;
+                        let match;
+                        
+                        // Reset lastIndex since we're reusing the regex
+                        urlPattern.lastIndex = 0;
+                        
+                        while (match = urlPattern.exec(text)) {
+                            // Add text before the link
+                            if (match.index > lastIndex) {
+                                fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+                            }
+                            
+                            // Create the link
+                            const link = document.createElement('a');
+                            link.href = match[0];
+                            link.textContent = match[0];
+                            link.target = '_blank';
+                            link.rel = 'noopener noreferrer';
+                            link.className = 'text-blue-600 hover:underline';
+                            fragment.appendChild(link);
+                            
+                            lastIndex = match.index + match[0].length;
+                        }
+                        
+                        // Add any remaining text
+                        if (lastIndex < text.length) {
+                            fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+                        }
+                        
+                        // Replace the text node with the fragment
+                        textNode.parentNode.replaceChild(fragment, textNode);
+                    }
+                });
+            }
+            
+            hideMessageModal() {
+                const modal = document.getElementById('message-modal');
+                modal.classList.remove('show');
+                
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+            
+            async deleteMessage(messageId) {
+                if (!this.token || !messageId) return;
+                
+                try {
+                    // Delete message via API
+                    const response = await fetch(`${this.mailTmApiUrl}/messages/${messageId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to delete message');
+                    }
+                    
+                    // Update local messages array
+                    this.messages = this.messages.filter(message => message.id !== messageId);
+                    this.renderMessages();
+                    
+                } catch (error) {
+                    console.error('Error deleting message:', error);
+                    alert('Error deleting message. Please try again.');
+                }
+            }
+            
+            async clearInbox() {
+                if (!this.token || this.messages.length === 0) return;
+                
+                const clearButton = document.getElementById('clear-inbox-button');
+                clearButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Clearing...';
+                clearButton.disabled = true;
+                
+                try {
+                    // Delete all messages sequentially
+                    for (const message of this.messages) {
+                        await fetch(`${this.mailTmApiUrl}/messages/${message.id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${this.token}`
+                            }
+                        });
+                    }
+                    
+                    // Clear local messages array
+                    this.messages = [];
+                    this.renderMessages();
+                    
+                } catch (error) {
+                    console.error('Error clearing inbox:', error);
+                    alert('Error clearing inbox. Please try again.');
+                } finally {
+                    clearButton.innerHTML = '<i class="fas fa-eraser mr-1"></i> Clear All';
+                    clearButton.disabled = false;
+                }
+            }
+            
+            toggleTheme() {
+                this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', this.theme);
+                document.getElementById('theme-toggle').innerHTML = this.theme === 'dark' 
+                    ? '<i class="fas fa-sun"></i>' 
+                    : '<i class="fas fa-moon"></i>';
+                
+                localStorage.setItem('ghost-inbox-theme', this.theme);
+            }
+        }
+        
+        // Initialize the application when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ghostInbox = new GhostInbox();
+        });
+    </script>
+    <footer style="text-align: center; font-size: 12px; padding: 10px;">
+    © 2025 Ghost-Inbox. All rights reserved.
+    </footer>
+
+
+
+
+
+
+</body></html>
