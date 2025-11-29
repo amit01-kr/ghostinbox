@@ -939,6 +939,39 @@
             display: inline-block;
             margin: 10px 0;
         
+/* Clean FAQ Styling */
+.clean-faq {
+  margin-top: 2rem;
+}
+
+.clean-faq .faq-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.clean-faq .faq-item:last-child {
+  border-bottom: none;
+}
+
+.clean-faq .faq-question {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clean-faq .faq-question:hover {
+  color: var(--accent);
+}
+
+.clean-faq .faq-answer {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
 
         }
     </style>
@@ -1875,6 +1908,40 @@
             window.ghostInbox = new GhostInbox();
         });
     </script> 
+  <section id="faq" class="clean-faq mt-12 mb-12">
+  <h2 class="text-xl font-bold mb-4">Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <h3 class="faq-question">What is Ghost Inbox?</h3>
+    <p class="faq-answer">Ghost Inbox is a free temporary email service that lets you create disposable emails for OTPs, verification emails, and privacy protection.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3 class="faq-question">How long does a Ghost Inbox email stay active?</h3>
+    <p class="faq-answer">Your temporary email stays active for the full countdown (usually 15 minutes). If the tab stays open, you can keep receiving emails until it expires.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3 class="faq-question">Can I receive OTP and verification emails?</h3>
+    <p class="faq-answer">Yes, you can receive OTPs, login codes, and verification links from most websites and apps.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3 class="faq-question">Do I need to sign up or create an account?</h3>
+    <p class="faq-answer">No registration is required. A temporary email is automatically generated when you open the site.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3 class="faq-question">Are the emails anonymous?</h3>
+    <p class="faq-answer">Yes. Ghost Inbox does not store personal information, making all email activity private and anonymous.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3 class="faq-question">What happens when the timer ends?</h3>
+    <p class="faq-answer">The inbox and emails are automatically deleted. You can generate a new email anytime.</p>
+  </div>
+</section>
+
   
 
     <footer style="text-align: center; font-size: 12px; padding: 10px;">
@@ -1890,6 +1957,7 @@
 
 </body>
 </html>
+
 
 
 
