@@ -938,6 +938,60 @@
             border-radius: 4px;
             display: inline-block;
             margin: 10px 0;
+          /* FAQ Section Styling */
+.styled-faq .faq-box {
+  background: var(--box);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.styled-faq details {
+  background: var(--box);
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.styled-faq summary {
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.styled-faq summary::after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  transition: transform 0.25s ease;
+  color: var(--muted);
+}
+
+.styled-faq details[open] summary::after {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.styled-faq p {
+  padding: 0 1rem 1rem 1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Subtle hover effect */
+.styled-faq details:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
         }
     </style>
 </head>
@@ -1942,4 +1996,5 @@
 
 </body>
 </html>
+
 
